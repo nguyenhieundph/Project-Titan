@@ -12,31 +12,30 @@ public class EnemyDetection : MonoBehaviour
     public bool CanSeePlayer { get; private set; }
     public Transform PlayerTransform => _playerTransform;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-      
-    }
-
-    // Update is called once per frame
     void Update()
     {
-       CanSeePlayer = CheckDetection();
+        CanSeePlayer = CheckDetection();
     }
 
     private bool CheckDetection()
     {
-      
         Collider[] hits = Physics.OverlapSphere(transform.position, _detectRange, _playerLayer);
 
-        if(hits.Length == null)
+        if (hits.Length == 0)
         {
             return false;
         }
         else
         {
             _playerTransform = hits[0].transform;
+            Vector3 directionToPlayer = (_playerTransform.position - _eyePoint.position).normalized;
+            float distanceToPlayer = (_playerTransform.position - _eyePoint.position).magnitude;
+
+            if (Physics.Raycast(_eyePoint.position, directionToPlayer, out RaycastHit hit, distanceToPlayer))
+            {
+                return hit.transform == _playerTransform;
+            }
+            return false;
         }
     }
 }
