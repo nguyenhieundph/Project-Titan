@@ -9,13 +9,33 @@ public class EnemyMovement : MonoBehaviour
 
     private NavMeshAgent _agent;
     private EnemyDetection _detection;
+    private Health _health;
     private Vector3 _lastKnownPlayerPosition;
 
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _detection = GetComponent<EnemyDetection>();
+        _health = GetComponent<Health>();
     }
+
+    private void OnEnable()
+    {
+        _health.OnDeath += HandleDeath;
+    }
+
+    private void OnDisable()
+    {
+        _health.OnDeath -= HandleDeath;
+    }
+
+    private void HandleDeath()
+    {
+        StopMoving();
+        enabled = false;
+        Destroy(gameObject);
+    }
+
     // Update is called once per frame
     void Update()
     {
