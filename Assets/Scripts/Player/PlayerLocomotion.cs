@@ -15,6 +15,7 @@ public class PlayerLocomotion : MonoBehaviour
 
     private CharacterController _controller;
     private PlayerInputActions _inputActions;
+    private Health _health;
     private Vector2 _moveInput;
     private float _verticalVelocity;
 
@@ -22,6 +23,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _inputActions = new PlayerInputActions();
+        _health = GetComponent<Health>();
     }
 
     private void OnEnable()
@@ -30,6 +32,7 @@ public class PlayerLocomotion : MonoBehaviour
         _inputActions.Player.Move.performed += OnMovePerformed;
         _inputActions.Player.Move.canceled += OnMoveCanceled;
         _inputActions.Player.Jump.performed += OnJumpPerformed;
+        _health.OnDeath += HandleDeath;
     }
 
     private void OnDisable()
@@ -37,7 +40,14 @@ public class PlayerLocomotion : MonoBehaviour
         _inputActions.Player.Move.performed -= OnMovePerformed;
         _inputActions.Player.Move.canceled -= OnMoveCanceled;
         _inputActions.Player.Jump.performed -= OnJumpPerformed;
+        _health.OnDeath -= HandleDeath;
         _inputActions.Player.Disable();
+    }
+
+    private void HandleDeath()
+    {
+        Debug.Log("Player has died.");
+        enabled = false;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)

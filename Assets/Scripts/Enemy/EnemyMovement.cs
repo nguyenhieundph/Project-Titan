@@ -6,6 +6,7 @@ public class EnemyMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float _repathThreshold = 0.5f; // khoảng cách tối thiểu để gọi lại SetDestination
+    [SerializeField] private float _stopDistance = 2f;
 
     private NavMeshAgent _agent;
     private EnemyDetection _detection;
@@ -49,12 +50,20 @@ public class EnemyMovement : MonoBehaviour
         else
         {
             Vector3 currentPlayerPos = _detection.PlayerTransform.position;
-            float distanceMoved = Vector3.Distance(_lastKnownPlayerPosition,currentPlayerPos);
+            float distanceToPlayer = Vector3.Distance(transform.position, currentPlayerPos);
 
-            if(distanceMoved > _repathThreshold)
+            if (distanceToPlayer <= _stopDistance)
             {
-                _agent.SetDestination(currentPlayerPos);
-                _lastKnownPlayerPosition = currentPlayerPos;
+                StopMoving();
+            }
+            else
+            {
+                float distanceMoved = Vector3.Distance(_lastKnownPlayerPosition, currentPlayerPos);
+                if (distanceMoved > _repathThreshold)
+                {
+                    _agent.SetDestination(currentPlayerPos);
+                    _lastKnownPlayerPosition = currentPlayerPos;
+                }
             }
         }
     }

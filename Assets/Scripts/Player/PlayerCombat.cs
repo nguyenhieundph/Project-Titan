@@ -9,23 +9,33 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float _attackDamage = 20f;
     [SerializeField] private LayerMask _enemyLayer;
 
+    private Health _health;
     private PlayerInputActions _inputActions;
 
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
+        _health = GetComponent<Health>();
     }
 
     private void OnEnable()
     {
         _inputActions.Enable();
         _inputActions.Player.Attack.performed += OnAttackPerformed;
+        _health.OnDeath += HandleDeath;
     }
 
     private void OnDisable()
     {
         _inputActions.Player.Attack.performed -= OnAttackPerformed;
         _inputActions.Disable();
+        _health.OnDeath -= HandleDeath;
+    }
+
+    private void HandleDeath()
+    {
+        Debug.Log("Player has died.");
+        enabled = false;
     }
 
     private void OnAttackPerformed(InputAction.CallbackContext context)
@@ -55,7 +65,5 @@ public class PlayerCombat : MonoBehaviour
         if(enemyHealth != null){
             enemyHealth.TakeDamage(_attackDamage);
         }
-
-        Debug.Log(enemyHealth.CurrentHealth);
     }
 }
