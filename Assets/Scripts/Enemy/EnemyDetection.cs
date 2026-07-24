@@ -31,7 +31,7 @@ public class EnemyDetection : MonoBehaviour
             Vector3 directionToPlayer = (_playerTransform.position - _eyePoint.position).normalized;
             float distanceToPlayer = (_playerTransform.position - _eyePoint.position).magnitude;
 
-            if (Physics.Raycast(_eyePoint.position, directionToPlayer, out RaycastHit hit, distanceToPlayer))
+            if (Physics.Raycast(_eyePoint.position, directionToPlayer, out RaycastHit hit, distanceToPlayer, ~0, QueryTriggerInteraction.Ignore))
             {
                 return hit.transform == _playerTransform;
             }
