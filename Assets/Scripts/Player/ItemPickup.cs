@@ -9,10 +9,10 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // Add the item to the player's inventory
-            PlayerLocomotion inventory = other.GetComponent<PlayerLocomotion>();
+            Inventory inventory = other.GetComponent<Inventory>();
             if (inventory != null)
             {
-                Debug.Log($"Picked up item: {_item.name}");
+                inventory.AddItem(_item);   
                 Destroy(gameObject); // Remove the item from the scene
             }
         }
