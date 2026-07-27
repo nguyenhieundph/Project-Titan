@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyMovement : MonoBehaviour
 {
+    public static event Action OnAnyEnemyDied;
+
     [Header("Movement Settings")]
     [SerializeField] private float _repathThreshold = 0.5f; // khoảng cách tối thiểu để gọi lại SetDestination
     [SerializeField] private float _stopDistance = 2f;
@@ -34,6 +37,7 @@ public class EnemyMovement : MonoBehaviour
     {
         StopMoving();
         enabled = false;
+        OnAnyEnemyDied?.Invoke();
         Destroy(gameObject);
     }
 
