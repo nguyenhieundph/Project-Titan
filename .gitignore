@@ -27,3 +27,6 @@ UserSettings/
 # OS
 .DS_Store
 Thumbs.db
+
+# Unity Recovery (auto-backup files, not needed in version control)
+Assets/_Recovery/
