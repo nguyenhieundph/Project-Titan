@@ -16,6 +16,7 @@ public class PlayerLocomotion : MonoBehaviour
     private CharacterController _controller;
     private PlayerInputActions _inputActions;
     private Health _health;
+    private Transform _cameraTransform;
     private Vector2 _moveInput;
     private float _verticalVelocity;
 
@@ -24,6 +25,7 @@ public class PlayerLocomotion : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         _inputActions = new PlayerInputActions();
         _health = GetComponent<Health>();
+        _cameraTransform = Camera.main.transform;
     }
 
     private void OnEnable()
@@ -89,8 +91,8 @@ public class PlayerLocomotion : MonoBehaviour
 
     private Vector3 CalculateMoveDirection()
     {
-        Vector3 camForward = Camera.main.transform.forward;
-        Vector3 camRight = Camera.main.transform.right;
+        Vector3 camForward = _cameraTransform.forward;
+        Vector3 camRight = _cameraTransform.right;
 
         camForward.y = 0f; // Làm phẳng vector forward xuống mặt phẳng XZ
         camRight.y = 0f;

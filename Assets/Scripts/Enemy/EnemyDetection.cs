@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyDetection : MonoBehaviour
@@ -12,9 +13,23 @@ public class EnemyDetection : MonoBehaviour
     public bool CanSeePlayer { get; private set; }
     public Transform PlayerTransform => _playerTransform;
 
-    void Update()
+    private void OnEnable()
     {
-        CanSeePlayer = CheckDetection();
+        StartCoroutine(DetectionLoop());
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
+    private IEnumerator DetectionLoop() 
+    {
+        while (true) 
+        { 
+            CanSeePlayer = CheckDetection();
+            yield return new WaitForSeconds(0.2f);
+        }
     }
 
     private bool CheckDetection()
