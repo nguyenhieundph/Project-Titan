@@ -1,62 +1,71 @@
-    using UnityEngine;
-    using System.Collections.Generic;
-    public class Inventory : MonoBehaviour
+using System;
+using UnityEngine;
+using System.Collections.Generic;
+public class Inventory : MonoBehaviour
+{
+    [SerializeField] private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
+    public event Action OnInventoryChanged; 
+    public void AddItem(Item item)
     {
-        [SerializeField] private List<InventorySlot> _inventorySlots = new List<InventorySlot>();
-
-        public void AddItem(Item item) 
+        if (item.isStackable == true)
         {
-            if(item.isStackable == true)
+            foreach (var slot in _inventorySlots)
             {
-                foreach(var slot in _inventorySlots)
+                if (slot.item == item && slot.quantity < item.maxStackSize)
                 {
-                    if(slot.item == item && slot.quantity < item.maxStackSize)
-                    {
-                        slot.quantity += 1;
-                        PrintInventory();
-                        return;
-                    }
+                    slot.quantity += 1;
+                    PrintInventory();
+                    OnInventoryChanged?.Invoke();
+                    return;
                 }
             }
-            _inventorySlots.Add(new InventorySlot(item, 1));
-            PrintInventory();
         }
+        _inventorySlots.Add(new InventorySlot(item, 1));
+        PrintInventory();
+        OnInventoryChanged?.Invoke();
+    }
 
-        private void PrintInventory()
+    private void PrintInventory()
+    {
+        Debug.Log("Current Inventory:");
+        foreach (var slot in _inventorySlots)
         {
-            Debug.Log("Current Inventory:");
-            foreach (var slot in _inventorySlots)
-            {
-                Debug.Log($"Item: {slot.item.itemName}, Quantity: {slot.quantity}");
-            }
+            Debug.Log($"Item: {slot.item.itemName}, Quantity: {slot.quantity}");
         }
+    }
 
-        public List<SaveData.InventorySlotData> GetSaveData()
+    public List<SaveData.InventorySlotData> GetSaveData()
+    {
+        List<SaveData.InventorySlotData> result = new List<SaveData.InventorySlotData>();
+
+        foreach (var slot in _inventorySlots)
         {
-            List<SaveData.InventorySlotData> result = new List<SaveData.InventorySlotData>();
-
-            foreach (var slot in _inventorySlots)
-            {
-                SaveData.InventorySlotData slotData = new SaveData.InventorySlotData();
-                slotData.itemId = slot.item.itemId;
-                slotData.quantity = slot.quantity;
-                result.Add(slotData);
-            }
-            return result;
+            SaveData.InventorySlotData slotData = new SaveData.InventorySlotData();
+            slotData.itemId = slot.item.itemId;
+            slotData.quantity = slot.quantity;
+            result.Add(slotData);
         }
+        return result;
+    }
 
-        public void LoadSaveData(List<SaveData.InventorySlotData> savedSlots, ItemDatabase database)
+    public void LoadSaveData(List<SaveData.InventorySlotData> savedSlots, ItemDatabase database)
+    {
+        _inventorySlots.Clear();
+
+        foreach (var slotData in savedSlots)
         {
-            _inventorySlots.Clear();
-
-            foreach (var slotData in savedSlots)
-            {
-                Item item = database.GetItemById(slotData.itemId);
-                if(item != null)
+            Item item = database.GetItemById(slotData.itemId);
+            if (item != null)
             {
                 _inventorySlots.Add(new InventorySlot(item, slotData.quantity));
             }
 
-            }
         }
+        OnInventoryChanged?.Invoke();
     }
+
+    public List<InventorySlot> GetAllSlots()
+    {
+        return _inventorySlots;
+    }
+}
