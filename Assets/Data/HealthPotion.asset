@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5907cbee5064f124884888d88f0520f2, type: 3}
   m_Name: HealthPotion
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemId: health_posion
   itemName: Health Potion
   description: "h\u1ED3i 20 m\xE1u"
   icon: {fileID: 0}

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03a235daabcf8a542b72995486d51b87, type: 3}
   m_Name: KillEnemiesQuest
   m_EditorClassIdentifier: Assembly-CSharp::Quest
+  questId: kill_enemies_quest
   questName: "Di\u1EC7t Qu\xE1i"
   description: "Ti\xEAu di\u1EC7t 3 k\u1EBB \u0111\u1ECBch"
   requiredKillCount: 3

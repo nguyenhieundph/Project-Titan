@@ -36,18 +36,27 @@ public class QuestManager : MonoBehaviour
             }
 
             Debug.Log("Quest Completed!");
-            // Here you can add additional logic for quest completion, like giving rewards.
         }
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public string GetSaveData_QuestId()
     {
-        
+        return _activeQuest.questId;
     }
 
-    // Update is called once per frame
-    void Update()
+    public int GetSaveData_KillCount()
     {
-        
+        return _cunrrentKillCount;
+    }
+
+    public bool GetSaveData_IsCompleted()
+    {
+        return _isCompleted;
+    }
+
+    public void LoadSaveData(int savedKillCount, bool savedIsCompleted)
+    {
+        _cunrrentKillCount = savedKillCount;
+        _isCompleted = savedIsCompleted;
     }
 }

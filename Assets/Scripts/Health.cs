@@ -35,4 +35,14 @@ public class Health : MonoBehaviour
             OnDeath?.Invoke();
         }
     }
+
+    public float GetSaveData()
+    {
+        return CurrentHealth;
+    }
+
+    public void LoadSaveData(float savedHealth)
+    {
+        CurrentHealth = savedHealth;
+    }
 }
