@@ -12,6 +12,7 @@ public class Health : MonoBehaviour
     public event Action OnDeath;
     public event Action<float> OnDamaged;
 
+    public float MaxHealth => _maxHealth;
     void Awake()
     {
         CurrentHealth = _maxHealth;

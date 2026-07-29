@@ -38,7 +38,9 @@ public class EnemyMovement : MonoBehaviour
         StopMoving();
         enabled = false;
         OnAnyEnemyDied?.Invoke();
-        Destroy(gameObject);
+        Collider collider = GetComponent<Collider>();
+        collider.enabled = false;
+        Destroy(gameObject, 1.5f);
     }
 
     // Update is called once per frame

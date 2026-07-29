@@ -19,6 +19,7 @@ public class PlayerLocomotion : MonoBehaviour
     private Transform _cameraTransform;
     private Vector2 _moveInput;
     private float _verticalVelocity;
+    private bool _isSprinting;
 
     private void Awake()
     {
@@ -34,6 +35,8 @@ public class PlayerLocomotion : MonoBehaviour
         _inputActions.Player.Move.performed += OnMovePerformed;
         _inputActions.Player.Move.canceled += OnMoveCanceled;
         _inputActions.Player.Jump.performed += OnJumpPerformed;
+        _inputActions.Player.Sprint.performed += OnSprintPerformed;
+        _inputActions.Player.Sprint.canceled += OnSprintCanceled;
         _health.OnDeath += HandleDeath;
     }
 
@@ -42,6 +45,8 @@ public class PlayerLocomotion : MonoBehaviour
         _inputActions.Player.Move.performed -= OnMovePerformed;
         _inputActions.Player.Move.canceled -= OnMoveCanceled;
         _inputActions.Player.Jump.performed -= OnJumpPerformed;
+        _inputActions.Player.Sprint.performed -= OnSprintPerformed;
+        _inputActions.Player.Sprint.canceled -= OnSprintCanceled;
         _health.OnDeath -= HandleDeath;
         _inputActions.Player.Disable();
     }
@@ -60,6 +65,16 @@ public class PlayerLocomotion : MonoBehaviour
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
         _moveInput = Vector2.zero;
+    }
+
+    private void OnSprintPerformed(InputAction.CallbackContext context)
+    {
+        _isSprinting = true;
+    }
+
+    private void OnSprintCanceled(InputAction.CallbackContext context)
+    {
+        _isSprinting = false;
     }
 
     private void OnJumpPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -84,7 +99,8 @@ public class PlayerLocomotion : MonoBehaviour
         ApplyRotation(moveDirection);
         ApplyGravity();
 
-        Vector3 velocity = moveDirection * _moveSpeed;
+        float speed = _isSprinting ? _sprintSpeed : _moveSpeed;
+        Vector3 velocity = moveDirection * speed;
         velocity.y = _verticalVelocity;
         _controller.Move(velocity * Time.deltaTime);
     }
