@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class QuestManager : MonoBehaviour
 {
@@ -8,6 +9,14 @@ public class QuestManager : MonoBehaviour
 
     private int _cunrrentKillCount;
     private bool _isCompleted;
+
+    public event Action OnQuestProgressChanged;
+
+    public int CunrrentKillCount => _cunrrentKillCount;
+    public int RequiredKillCount => _activeQuest.requiredKillCount;
+    public string QuestName => _activeQuest.questName;
+    public bool IsCompleted => _isCompleted;
+
 
     private void OnEnable()
     {
@@ -37,6 +46,8 @@ public class QuestManager : MonoBehaviour
 
             Debug.Log("Quest Completed!");
         }
+
+        OnQuestProgressChanged?.Invoke();
     }
 
     public string GetSaveData_QuestId()
@@ -58,5 +69,6 @@ public class QuestManager : MonoBehaviour
     {
         _cunrrentKillCount = savedKillCount;
         _isCompleted = savedIsCompleted;
+        OnQuestProgressChanged?.Invoke();
     }
 }
