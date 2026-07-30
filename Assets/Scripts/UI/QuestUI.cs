@@ -23,9 +23,6 @@ public class QuestUI : MonoBehaviour
 
     private void UpdateQuestText()
     {
-        // TODO: gán _questText.text theo định dạng:
-        //   nếu chưa hoàn thành: "{QuestName}: {CunrrentKillCount}/{RequiredKillCount}"    
-        //   nếu đã hoàn thành: "{QuestName}: Completed!"
         if (_questManager.IsCompleted == true) 
         {
             _questText.text = $"{_questManager.QuestName}: Completed!";
