@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerLocomotion : MonoBehaviour
@@ -20,6 +21,8 @@ public class PlayerLocomotion : MonoBehaviour
     private Vector2 _moveInput;
     private float _verticalVelocity;
     private bool _isSprinting;
+
+    public static event Action OnPlayerDied;
 
     private void Awake()
     {
@@ -55,6 +58,7 @@ public class PlayerLocomotion : MonoBehaviour
     {
         Debug.Log("Player has died.");
         enabled = false;
+        OnPlayerDied?.Invoke();
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
