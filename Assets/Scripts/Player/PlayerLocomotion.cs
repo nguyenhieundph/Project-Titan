@@ -24,12 +24,15 @@ public class PlayerLocomotion : MonoBehaviour
 
     public static event Action OnPlayerDied;
 
+    private Animator _animator;
+
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _inputActions = new PlayerInputActions();
         _health = GetComponent<Health>();
         _cameraTransform = Camera.main.transform;
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void OnEnable()
@@ -85,7 +88,8 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (_controller.isGrounded)
         {
-            _verticalVelocity = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+            _verticalVelocity = Mathf.Sqrt(_jumpHeight * -1.5f * _gravity);
+            _animator.SetTrigger("Jump");
         }
     }
 
@@ -100,13 +104,46 @@ public class PlayerLocomotion : MonoBehaviour
     void Update()
     {
         Vector3 moveDirection = CalculateMoveDirection();
-        ApplyRotation(moveDirection);
+        ApplyRotation(); // không cần truyền moveDirection nữa
         ApplyGravity();
 
         float speed = _isSprinting ? _sprintSpeed : _moveSpeed;
         Vector3 velocity = moveDirection * speed;
         velocity.y = _verticalVelocity;
         _controller.Move(velocity * Time.deltaTime);
+
+        UpdateAnimator(moveDirection, speed);
+    }
+
+    private void ApplyRotation()
+    {
+        Vector3 camForward = _cameraTransform.forward;
+        camForward.y = 0f;
+
+        if (camForward.sqrMagnitude < 0.0001f)
+            return; // camera đang nhìn thẳng đứng lên/xuống, không xác định được hướng ngang
+
+        camForward.Normalize();
+
+        Quaternion targetRotation = Quaternion.LookRotation(camForward);
+        transform.rotation = Quaternion.RotateTowards(
+            transform.rotation,
+            targetRotation,
+            _rotationSpeed * Time.deltaTime
+        );
+    }
+
+    private void UpdateAnimator(Vector3 moveDirection, float speed) 
+    {
+        float currentSpeed = moveDirection.magnitude * speed;
+        _animator.SetFloat("Speed", currentSpeed);
+        _animator.SetBool("IsGrounded", _controller.isGrounded);
+
+        if (_controller.isGrounded && _verticalVelocity <= 0f)
+        {
+            //_animator.SetTrigger("Jump");
+        }
+
     }
 
     private Vector3 CalculateMoveDirection()
